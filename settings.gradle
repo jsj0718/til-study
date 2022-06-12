@@ -1,0 +1,9 @@
+rootProject.name = 'til-backend-study'
+include 'the-java'
+include 'effective-java'
+include 'toby-spring'
+include 'spring-batch'
+include 'design-pattern'
+include 'tdd'
+include 'ddd'
+
