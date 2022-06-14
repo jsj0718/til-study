@@ -2,6 +2,7 @@ package me.jsj.chapter1.user.dao.v4;
 
 import me.jsj.chapter1.user.dao.v3.ConnectionMaker;
 import me.jsj.chapter1.user.dao.v3.NConnectionMaker;
+import me.jsj.chapter1.user.dao.v6.CountingConnectionMaker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,6 +25,11 @@ public class DaoFactory {
 
     @Bean
     public ConnectionMaker connectionMaker() {
+        return new CountingConnectionMaker(realConnectionMaker());
+    }
+
+    @Bean
+    public ConnectionMaker realConnectionMaker() {
         return new NConnectionMaker();
     }
 }

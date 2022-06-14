@@ -8,6 +8,7 @@ import me.jsj.chapter1.user.dao.v3.NConnectionMaker;
 import me.jsj.chapter1.user.dao.v3.UserDaoV3;
 import me.jsj.chapter1.user.dao.v4.DaoFactory;
 import me.jsj.chapter1.user.dao.v4.UserDaoV4;
+import me.jsj.chapter1.user.dao.v6.CountingConnectionMaker;
 import me.jsj.chapter1.user.domain.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -146,4 +147,29 @@ class UserDaoTest {
         assertThat(userDao1).isNotEqualTo(userDao2); //싱긑톤 X
         assertThat(userDao3).isEqualTo(userDao4); //싱글톤 O
     }
+
+    @Test
+    void 유저_H2인메모리DB에_등록및조회_V6() throws SQLException, ClassNotFoundException {
+        //given
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserDaoV4 userDao = applicationContext.getBean("userDao", UserDaoV4.class);
+
+        CountingConnectionMaker ccm = applicationContext.getBean("connectionMaker", CountingConnectionMaker.class);
+
+        User user = new User();
+        user.setId("test");
+        user.setName("테스터");
+        user.setPassword("1234");
+
+        //when
+        userDao.add(user);
+        User findUser = userDao.get(user.getId());
+
+        //then
+        assertThat(findUser.getId()).isEqualTo("test");
+        assertThat(findUser.getName()).isEqualTo("테스터");
+        assertThat(findUser.getPassword()).isEqualTo("1234");
+        assertThat(ccm.getCounter()).isEqualTo(2);
+    }
+
 }
