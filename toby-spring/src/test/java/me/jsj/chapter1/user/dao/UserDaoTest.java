@@ -172,4 +172,18 @@ class UserDaoTest {
         assertThat(ccm.getCounter()).isEqualTo(2);
     }
 
+    @Test
+    void testGetCount() throws SQLException, ClassNotFoundException {
+        //given
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserDaoV4 userDao = applicationContext.getBean("userDao", UserDaoV4.class);
+
+        //when & then
+        assertThat(userDao.getCount()).isEqualTo(0);
+
+        User user = new User("test", "테스터", "1234");
+        userDao.add(user);
+        assertThat(userDao.getCount()).isEqualTo(1);
+    }
+
 }

@@ -49,4 +49,20 @@ public class UserDaoV4 {
 
         return user;
     }
+
+    public int getCount() throws ClassNotFoundException, SQLException {
+        Connection conn = connectionMaker.makeConnection();
+
+        PreparedStatement ps = conn.prepareStatement("select count(*) from USERS");
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        rs.close();
+        ps.close();
+        conn.close();
+
+        return count;
+    }
 }
