@@ -1,4 +1,4 @@
-package me.jsj.chapter3.user.dao;
+package me.jsj.chapter3.user.dao.v1;
 
 import me.jsj.chapter1.user.dao.v3.ConnectionMaker;
 
@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDaoV1 {
-
     private final ConnectionMaker connectionMaker;
 
     public UserDaoV1(ConnectionMaker connectionMaker) {
