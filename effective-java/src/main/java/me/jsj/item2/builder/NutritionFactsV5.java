@@ -18,6 +18,7 @@ public class NutritionFactsV5 {
     private final int sodium; // (mg/1회 제공량) -> 선택
     private final int carbohydrate; // (g/1회 제공량) -> 선택
 
+/*
     public static void main(String[] args) {
         NutritionFactsV5 nutritionFacts = new Builder()
                 .servingSize(240)
@@ -29,6 +30,7 @@ public class NutritionFactsV5 {
 
         log.info(nutritionFacts.toString());
     }
+*/
 }
 
 

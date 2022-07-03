@@ -6,4 +6,5 @@ include 'spring-batch'
 include 'design-pattern'
 include 'tdd'
 include 'ddd'
+include 'korean-hello-service'
 

@@ -13,6 +13,7 @@ public class NutritionFactsV4 {
     private final int sodium; // (mg/1회 제공량) -> 선택
     private final int carbohydrate; // (g/1회 제공량) -> 선택
 
+/*
     public static void main(String[] args) {
         NutritionFactsV4 nutritionFacts = new Builder(240, 8)
                 .calories(100)
@@ -22,6 +23,7 @@ public class NutritionFactsV4 {
 
         log.info(nutritionFacts.toString());
     }
+*/
 
     public static class Builder {
         private final int servingSize;

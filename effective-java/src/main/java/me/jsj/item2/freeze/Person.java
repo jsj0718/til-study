@@ -20,6 +20,7 @@ public class Person {
         this.grade = new ArrayList<>();
     }
 
+/*
     public static void main(String[] args) {
         final Person person = new Person("jsj", 1995);
 //        person.name = "정세진";
@@ -27,4 +28,5 @@ public class Person {
 
 //        person = new Person("세진", 1995);
     }
+*/
 }

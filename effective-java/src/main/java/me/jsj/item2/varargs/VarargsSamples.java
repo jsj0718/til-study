@@ -10,8 +10,10 @@ public class VarargsSamples {
         Arrays.stream(numbers).forEach(System.out::println);
     }
 
+/*
     public static void main(String[] args) {
         VarargsSamples varargsSamples = new VarargsSamples();
         varargsSamples.printNumbers(1, 2, 3);
     }
+*/
 }
