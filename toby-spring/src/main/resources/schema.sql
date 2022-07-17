@@ -6,3 +6,15 @@ CREATE TABLE USERS (
     password VARCHAR(100) NOT NULL,
     PRIMARY KEY (id)
 );
+
+DROP TABLE IF EXISTS USERSV2;
+
+CREATE TABLE USERSV2 (
+    id VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    level INT NOT NULL,
+    login INT NOT NULL,
+    recommend INT NOT NULL,
+    PRIMARY KEY (id)
+);
