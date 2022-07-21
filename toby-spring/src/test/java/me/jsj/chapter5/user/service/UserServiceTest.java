@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +25,9 @@ class UserServiceTest {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    PlatformTransactionManager transactionManager;
 
     List<User> users;
 
@@ -103,6 +107,40 @@ class UserServiceTest {
 
         assertThat(userWithLevelRead.getLevel()).isEqualTo(userWithLevelRead.getLevel());
         assertThat(userWithoutLevelRead.getLevel()).isEqualTo(userWithoutLevelRead.getLevel());
+    }
+
+    static class TestUserService extends UserService {
+        private String id;
+
+        private TestUserService(UserDao userDao, PlatformTransactionManager transactionManager, String id) {
+            super(userDao, transactionManager);
+            this.id = id;
+        }
+
+        @Override
+        public void upgradeLevel(User user) {
+            if (user.getId().equals(id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+        }
+
+    }
+
+    static class TestUserServiceException extends RuntimeException {
+    }
+
+    @Test
+    void upgradeAllOrNothing() {
+        TestUserService testUserService = new TestUserService(userDao, transactionManager, users.get(3).getId());
+
+        users.stream().forEach(user -> userDao.add(user));
+
+        try {
+            testUserService.upgradeLevels();
+        } catch (TestUserServiceException e) {
+
+        }
+
+        checkLevelUpgraded(users.get(1), false);
     }
 
 }
