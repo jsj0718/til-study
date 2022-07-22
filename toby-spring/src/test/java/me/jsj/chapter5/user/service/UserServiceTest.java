@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.MailSender;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.Arrays;
@@ -29,16 +30,19 @@ class UserServiceTest {
     @Autowired
     PlatformTransactionManager transactionManager;
 
+    @Autowired
+    MailSender mailSender;
+
     List<User> users;
 
     @BeforeEach
     void setup() {
         users = Arrays.asList(
-                new User("1", "채치수", "test1", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER -1, 0),
-                new User("2", "강백호", "test2", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER, 0),
-                new User("3", "서태웅", "test3", Level.SILVER, 60, MIN_RECOMMEND_COUNT_FOR_GOLD-1),
-                new User("4", "정대만", "test4", Level.SILVER, 60, MIN_RECOMMEND_COUNT_FOR_GOLD),
-                new User("5", "송태섭", "test5", Level.GOLD, 100, Integer.MAX_VALUE)
+                new User("1", "채치수", "test1", "sj.jeong@11h11m.com", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER -1, 0),
+                new User("2", "강백호", "test2", "test2@email.com", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER, 0),
+                new User("3", "서태웅", "test3", "test3@email.com", Level.SILVER, 60, MIN_RECOMMEND_COUNT_FOR_GOLD-1),
+                new User("4", "정대만", "test4", "test4@email.com", Level.SILVER, 60, MIN_RECOMMEND_COUNT_FOR_GOLD),
+                new User("5", "송태섭", "test5", "test5@email.com", Level.GOLD, 100, Integer.MAX_VALUE)
         );
     }
 
@@ -75,6 +79,8 @@ class UserServiceTest {
     void upgradeLevels() {
         users.stream().forEach(user -> userDao.add(user));
 
+        MockMailSender mockMailSender = (MockMailSender) userService.getMailSender();
+
         userService.upgradeLevels();
 
         checkLevelUpgraded(users.get(0), false);
@@ -82,6 +88,11 @@ class UserServiceTest {
         checkLevelUpgraded(users.get(2), false);
         checkLevelUpgraded(users.get(3), true);
         checkLevelUpgraded(users.get(4), false);
+
+        List<String> request = mockMailSender.getRequest();
+        assertThat(request.size()).isEqualTo(2);
+        assertThat(request.get(0)).isEqualTo(users.get(1).getEmail());
+        assertThat(request.get(1)).isEqualTo(users.get(3).getEmail());
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
@@ -112,8 +123,8 @@ class UserServiceTest {
     static class TestUserService extends UserService {
         private String id;
 
-        private TestUserService(UserDao userDao, PlatformTransactionManager transactionManager, String id) {
-            super(userDao, transactionManager);
+        private TestUserService(UserDao userDao, PlatformTransactionManager transactionManager, MailSender mailSender, String id) {
+            super(userDao, transactionManager, mailSender);
             this.id = id;
         }
 
@@ -130,7 +141,7 @@ class UserServiceTest {
 
     @Test
     void upgradeAllOrNothing() {
-        TestUserService testUserService = new TestUserService(userDao, transactionManager, users.get(3).getId());
+        TestUserService testUserService = new TestUserService(userDao, transactionManager, mailSender, users.get(3).getId());
 
         users.stream().forEach(user -> userDao.add(user));
 

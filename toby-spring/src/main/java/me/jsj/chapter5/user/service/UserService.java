@@ -1,33 +1,28 @@
 package me.jsj.chapter5.user.service;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.jsj.chapter5.user.dao.UserDao;
 import me.jsj.chapter5.user.domain.Level;
 import me.jsj.chapter5.user.domain.User;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import javax.transaction.UserTransaction;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-
+@Getter
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserLevelUpgradePolicy {
 
     public static final int MIN_LOGIN_COUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_COUNT_FOR_GOLD = 30;
-    private final UserDao userDao;
 
+    private final UserDao userDao;
     private final PlatformTransactionManager transactionManager;
+    private final MailSender mailSender;
 
     /*
         //V1
@@ -105,6 +100,38 @@ public class UserService implements UserLevelUpgradePolicy {
     public void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
+        sendUpgradeEmail(user);
+    }
+
+/*
+    //V1
+    private void sendUpgradeEmail(User user) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "mail.ksug.org");
+        Session s = Session.getInstance(props, null);
+
+        MimeMessage mimeMessage = new MimeMessage(s);
+        try {
+            mimeMessage.setFrom(new InternetAddress("useradmin@ksug.org"));
+            mimeMessage.addRecipients(Message.RecipientType.TO, String.valueOf(new InternetAddress(user.getEmail())));
+            mimeMessage.setSubject("Upgrade 안내");
+            mimeMessage.setText("사용자 님의 등급이 " + user.getLevel().name() + "로 승급하였습니다.");
+        } catch (AddressException e) {
+            throw new RuntimeException(e);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+*/
+    //V2
+    private void sendUpgradeEmail(User user) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setFrom("useradmin@ksug.org");
+        mailMessage.setSubject("Upgrade 안내");
+        mailMessage.setText("사용자님 등급이 " + user.getLevel().name());
+
+        mailSender.send(mailMessage);
     }
 
     public void add(User user) {

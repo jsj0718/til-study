@@ -13,6 +13,7 @@ CREATE TABLE USERSV2 (
     id VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     level INT NOT NULL,
     login INT NOT NULL,
     recommend INT NOT NULL,

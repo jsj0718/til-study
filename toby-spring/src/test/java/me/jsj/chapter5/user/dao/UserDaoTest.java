@@ -22,9 +22,9 @@ class UserDaoTest {
 
     @BeforeEach
     void setup() {
-        user1 = new User("1", "정대만", "test1", Level.BASIC, 1, 0);
-        user2 = new User("2", "서태웅", "test2", Level.SILVER, 55, 10);
-        user3 = new User("3", "강백호", "test3", Level.GOLD, 100, 40);
+        user1 = new User("1", "정대만", "test1", "test1@email.com", Level.BASIC, 1, 0);
+        user2 = new User("2", "서태웅", "test2", "test2@email.com", Level.SILVER, 55, 10);
+        user3 = new User("3", "강백호", "test3", "test3@email.com", Level.GOLD, 100, 40);
     }
 
     @AfterEach
