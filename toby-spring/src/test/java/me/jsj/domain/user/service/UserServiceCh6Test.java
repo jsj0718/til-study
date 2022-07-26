@@ -1,6 +1,6 @@
 package me.jsj.domain.user.service;
 
-import me.jsj.aop.factorybean.TxProxyFactoryBean;
+import lombok.NoArgsConstructor;
 import me.jsj.aop.handler.TransactionHandler;
 import me.jsj.domain.user.Level;
 import me.jsj.domain.user.UserV2;
@@ -20,9 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.lang.reflect.Proxy;
@@ -53,7 +54,7 @@ class UserServiceCh6Test {
     UserServiceCh6V1 userService;
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserServiceCh6V1 testUserService;
 
     @Autowired
     MailSender mailSender;
@@ -103,7 +104,7 @@ class UserServiceCh6Test {
         users.stream().forEach(user -> userDao.add(user));
 
         //메일 발송 여부 확인을 위해 MailSender의 Mock 객체 DI (생성자 주입의 경우 Mock 객체가 Singleton이므로 Clear 필요)
-        MockMailSender mockMailSender = (MockMailSender) userServiceImpl.getMailSender();
+        MockMailSender mockMailSender = (MockMailSender) ((UserServiceImpl) userService).getMailSender();
         mockMailSender.getRequest().clear();
 
         //테스트 대상 실행
@@ -135,12 +136,12 @@ class UserServiceCh6Test {
     @Test
     public void upgradeLevelsV2() {
         MockUserDao mockUserDao = new MockUserDao(users);
-        MockMailSender mockMailSender = (MockMailSender) userServiceImpl.getMailSender();
+        MockMailSender mockMailSender = (MockMailSender) ((UserServiceImpl) userService).getMailSender();
         mockMailSender.getRequest().clear();
 
-        UserServiceImpl testUserServiceImpl = new UserServiceImpl(mockUserDao, mockMailSender);
+        UserServiceImpl TestUserServiceImpl = new UserServiceImpl(mockUserDao, mockMailSender);
 
-        testUserServiceImpl.upgradeLevels();
+        TestUserServiceImpl.upgradeLevels();
 
         List<UserV2> updated = mockUserDao.getUpdated();
         assertThat(updated.size()).isEqualTo(2);
@@ -166,10 +167,10 @@ class UserServiceCh6Test {
 
         MailSender mockMailSender = mock(MailSender.class);
 
-        UserServiceImpl testUserServiceImpl = new UserServiceImpl(mockUserDao, mockMailSender);
+        UserServiceImpl TestUserServiceImpl = new UserServiceImpl(mockUserDao, mockMailSender);
 
         //when
-        testUserServiceImpl.upgradeLevels();
+        TestUserServiceImpl.upgradeLevels();
 
         //then
         verify(mockUserDao, times(2)).update(any(UserV2.class));
@@ -185,17 +186,18 @@ class UserServiceCh6Test {
         assertThat(mailMessages.get(1).getTo()[0]).isEqualTo(users.get(3).getEmail());
     }
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "4";
 
-        private TestUserService(UserDaoCh5V1 userDao, MailSender mailSender, String id) {
+        protected TestUserServiceImpl(UserDaoCh5V1 userDao, MailSender mailSender) {
             super(userDao, mailSender);
-            this.id = id;
         }
 
         @Override
         public void upgradeLevel(UserV2 user) {
-            if (user.getId().equals(id)) throw new TestUserServiceException();
+            if (user.getId().equals(id)) {
+                throw new TestUserServiceException();
+            }
             super.upgradeLevel(user);
         }
     }
@@ -205,16 +207,15 @@ class UserServiceCh6Test {
 
     @Test
     void upgradeAllOrNothingV1() {
-        TestUserService testUserService = new TestUserService(userDao, mailSender, users.get(3).getId());
+        TestUserServiceImpl TestUserService = new TestUserServiceImpl(userDao, mailSender);
 
-        UserServiceTx userServiceTx = new UserServiceTx(testUserService, transactionManager);
+        UserServiceTx userServiceTx = new UserServiceTx(TestUserService, transactionManager);
 
         users.stream().forEach(user -> userDao.add(user));
 
         try {
             userServiceTx.upgradeLevels();
         } catch (TestUserServiceException e) {
-
         }
 
         checkLevelUpgraded(users.get(1), false);
@@ -224,9 +225,9 @@ class UserServiceCh6Test {
     void upgradeAllOrNothingV2() {
         users.stream().forEach(user -> userDao.add(user));
 
-        TestUserService testUserService = new TestUserService(userDao, mailSender, users.get(3).getId());
+        TestUserServiceImpl TestUserService = new TestUserServiceImpl(userDao, mailSender);
 
-        TransactionHandler transactionHandler = new TransactionHandler(testUserService, transactionManager, "upgradeLevels");
+        TransactionHandler transactionHandler = new TransactionHandler(TestUserService, transactionManager, "upgradeLevels");
         UserServiceCh6V1 userService = (UserServiceCh6V1) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{UserServiceCh6V1.class}, transactionHandler);
 
         try {
@@ -238,19 +239,56 @@ class UserServiceCh6Test {
         checkLevelUpgraded(users.get(1), false);
     }
 
+/*
     @Test
     @DirtiesContext //컨텍스트 무효화 애노테이션
     void upgradeAllOrNothingV3() throws Exception {
-        TestUserService testUserService = new TestUserService(userDao, mailSender, users.get(3).getId());
+        TestUserService TestUserService = new TestUserService(userDao, mailSender, users.get(3).getId());
 
         TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
+        txProxyFactoryBean.setTarget(TestUserService);
         UserServiceCh6V1 txUserService = (UserServiceCh6V1) txProxyFactoryBean.getObject();
 
         users.stream().forEach(user -> userDao.add(user));
 
         try {
             txUserService.upgradeLevels();
+        } catch (TestUserServiceException e) {
+
+        }
+
+        checkLevelUpgraded(users.get(1), false);
+    }
+*/
+
+/*
+    @Test
+    @DirtiesContext //컨텍스트 설정을 변경하므로 여전히 필요
+    void upgradeAllOrNothingV4() throws Exception {
+        TestUserServiceImpl TestUserService = new TestUserServiceImpl(userDao, mailSender);
+
+        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
+        txProxyFactoryBean.setTarget(TestUserService);
+        UserServiceCh6V1 txUserService = (UserServiceCh6V1) txProxyFactoryBean.getObject();
+
+        users.stream().forEach(user -> userDao.add(user));
+
+        try {
+            txUserService.upgradeLevels();
+        } catch (TestUserServiceException e) {
+
+        }
+
+        checkLevelUpgraded(users.get(1), false);
+    }
+*/
+
+    @Test
+    void upgradeAllOrNothingV5() {
+        users.stream().forEach(user -> userDao.add(user));
+
+        try {
+            testUserService.upgradeLevels();
         } catch (TestUserServiceException e) {
 
         }

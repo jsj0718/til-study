@@ -1,38 +1,24 @@
-package me.jsj.domain.user.service.chapter6;
+package me.jsj.aop.advice;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import me.jsj.domain.user.UserV2;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-@Getter
 @RequiredArgsConstructor
-public class UserServiceTx implements UserServiceCh6V1 {
-
-    private final UserServiceCh6V1 userService; //타깃 오브젝트
-
+public class TransactionAdvice implements MethodInterceptor {
     private final PlatformTransactionManager transactionManager;
 
-    //메소드 구현 및 위임
     @Override
-    public void add(UserV2 user) {
-        userService.add(user); 
-    }
-
-    //메소드 구현
-    @Override
-    public void upgradeLevels() {
-        //부가기능 수행
+    public Object invoke(MethodInvocation invocation) throws Throwable {
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
-            //위임
-            userService.upgradeLevels();
-
-            //부가 기능 수행
+            Object ret = invocation.proceed();
             transactionManager.commit(status);
+            return ret;
         } catch (RuntimeException e) {
             transactionManager.rollback(status);
             throw e;
