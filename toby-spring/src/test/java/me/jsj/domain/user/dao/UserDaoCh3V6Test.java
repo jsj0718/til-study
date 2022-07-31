@@ -34,6 +34,10 @@ class UserDaoCh3V6Test {
 
     @Test
     void testAddAndDeleteMethod() {
+        userDao.deleteAll();
+
+        userDao.add(new UserV1("id", "name", "password"));
+
         assertThat(userDao.getCount()).isEqualTo(1);
 
         userDao.deleteAll();

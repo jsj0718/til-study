@@ -1,6 +1,5 @@
 package me.jsj.domain.user.service;
 
-import lombok.NoArgsConstructor;
 import me.jsj.aop.handler.TransactionHandler;
 import me.jsj.domain.user.Level;
 import me.jsj.domain.user.UserV2;
@@ -17,13 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.lang.reflect.Proxy;
@@ -296,4 +292,12 @@ class UserServiceCh6Test {
         checkLevelUpgraded(users.get(1), false);
     }
 
+/*
+    //인메모리 DB에서는 @Transactional이 동작하지 않는다.
+    @Test
+    void readOnlyTransactionAttribute() {
+        users.forEach(user -> userDao.add(user));
+        userService.getAll();
+    }
+*/
 }

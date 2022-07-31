@@ -2,14 +2,18 @@ package me.jsj.domain.user.service.chapter6;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import me.jsj.domain.user.dao.chapter5.UserDaoCh5V1;
 import me.jsj.domain.user.Level;
 import me.jsj.domain.user.UserV2;
+import me.jsj.domain.user.dao.chapter5.UserDaoCh5V1;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
+@Service(value = "userService")
 public class UserServiceImpl implements UserServiceCh6V1 {
 
     public static final int MIN_LOGIN_COUNT_FOR_SILVER = 50;
@@ -53,5 +57,25 @@ public class UserServiceImpl implements UserServiceCh6V1 {
     public void add(UserV2 user) {
         if (user.getLevel() == null) user.setLevel(Level.BASIC);
         userDao.add(user);
+    }
+
+    @Override
+    public UserV2 get(String id) {
+        return userDao.get(id);
+    }
+
+    @Override
+    public List<UserV2> getAll() {
+        return userDao.getAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        userDao.deleteAll();
+    }
+
+    @Override
+    public void update(UserV2 user) {
+        userDao.update(user);
     }
 }

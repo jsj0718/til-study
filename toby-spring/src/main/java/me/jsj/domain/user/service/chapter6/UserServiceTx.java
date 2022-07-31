@@ -7,6 +7,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.util.List;
+
 @Getter
 @RequiredArgsConstructor
 public class UserServiceTx implements UserServiceCh6V1 {
@@ -19,6 +21,26 @@ public class UserServiceTx implements UserServiceCh6V1 {
     @Override
     public void add(UserV2 user) {
         userService.add(user); 
+    }
+
+    @Override
+    public UserV2 get(String id) {
+        return userService.get(id);
+    }
+
+    @Override
+    public List<UserV2> getAll() {
+        return userService.getAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        userService.deleteAll();
+    }
+
+    @Override
+    public void update(UserV2 user) {
+        userService.update(user);
     }
 
     //메소드 구현
