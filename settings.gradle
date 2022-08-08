@@ -3,3 +3,4 @@ include 'software-engineering:ddd', 'software-engineering:design-pattern', 'soft
 include 'spring-framework:toby-spring', 'spring-framework:spring-batch'
 include 'language:effective-java', 'language:the-java'
 include 'language:reference-modules:korean-hello-service'
+include 'frontend-study'
