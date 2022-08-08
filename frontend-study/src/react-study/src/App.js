@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import {useCallback, useState} from "react";
+import CounterView from "./components/counter/CounterView";
+import CountButtons from "./components/counter/CountButtons";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [count, setCount] = useState(0);
+
+    const incrementHandler = useCallback(() => {
+        setCount((count) => count + 1);
+    }, []);
+
+    const decrementHandler = useCallback(() => {
+        setCount((count) => count - 1);
+    }, []);
+
+    return (
+        <>
+            <CounterView count={count}/>
+            <CountButtons incrementFn={incrementHandler} decrementFn={decrementHandler}/>
+        </>
+    );
 }
 
 export default App;
