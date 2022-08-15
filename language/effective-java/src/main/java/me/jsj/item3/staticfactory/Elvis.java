@@ -1,6 +1,6 @@
 package me.jsj.item3.staticfactory;
 
-public class Elvis {
+public class Elvis implements Singer {
     public static final Elvis INSTANCE = new Elvis();
 
     private Elvis() {
@@ -16,8 +16,9 @@ public class Elvis {
         System.out.println("Whoa baby, I'm outta here!");
     }
 
+    @Override
     public void sing() {
-        System.out.println("I'll have a blue~ Christmas without you");
+        System.out.println("My Way!");
     }
 
 }
