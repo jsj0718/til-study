@@ -1,0 +1,13 @@
+foo:
+  bar: 100
+  baz: test
+  qux: true
+
+activeProfiles: c
+
+spring:
+  data:
+    mongodb:
+      host: host
+      port: 3400
+      uri: uri
