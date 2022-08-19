@@ -1,0 +1,35 @@
+/*
+    * //내장 태스크//
+    * gradle tasks [내장 태스트 명령어]
+    *
+    * //프로퍼티//
+    * gradle properties [빌드 스크립트에 정의된 속성 목록 명령어]
+    *
+    * //로그//
+    * gradle -i <task> 또는 gradle --info <task> [로그 설정]
+    * -i(--info) < -s(--stacktrace) < -S(--full-stacktrace) < -d(--debug) [로그 레벨]
+    *
+    * //build.gradle 이름 수정//
+    * gradle -b build-new.gradle [build.gradle 파일 이름을 다른 이름으로 지정]
+    *
+    * //그레이들 데몬//
+    * gradle --daemon hello [그레이들 데몬, JVM 상주시켜 대기 시간 감소]
+    * gradle --stop [그레이들 데몬 명시적 종료, 보통 3시간이면 자동 종료]
+*/
+
+//hello task 정의
+task hello {
+    println 'Hello, Gradle'
+}
+
+/*
+task greet {
+    def user = user
+    println 'hello, ' + user
+}
+*/
+
+dependencies {
+
+}
+
