@@ -4,8 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
 @Entity
@@ -22,4 +20,12 @@ public class JoinDomain {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DOMAIN_ID")
     private Domain domain;
+
+    @Builder
+    public JoinDomain(Long id, String value, boolean flag, Domain domain) {
+        this.id = id;
+        this.value = value;
+        this.flag = flag;
+        this.domain = domain;
+    }
 }

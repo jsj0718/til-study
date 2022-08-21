@@ -6,8 +6,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
@@ -24,4 +22,11 @@ public class Domain {
     @OneToMany(mappedBy = "domain")
     private List<JoinDomain> joinDomains = new ArrayList<>();
 
+    @Builder
+    public Domain(Long id, String name, boolean flag, List<JoinDomain> joinDomains) {
+        this.id = id;
+        this.name = name;
+        this.flag = flag;
+        this.joinDomains = joinDomains;
+    }
 }

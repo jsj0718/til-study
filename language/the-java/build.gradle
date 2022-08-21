@@ -1,3 +1,51 @@
-dependencies {
-
+plugins {
+    id 'jacoco'
 }
+
+dependencies {
+    implementation 'net.bytebuddy:byte-buddy:1.12.13'
+}
+
+test {
+    useJUnitPlatform()
+
+    finalizedBy 'jacocoTestReport' //report는 항상 테스트 실행 후에 생성된다.
+}
+
+jacoco {
+    toolVersion '0.8.8'
+}
+
+jacocoTestReport {
+    dependsOn test //report 생성 전에 테스트 실행이 요구된다.
+
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+/*
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.5
+            }
+        }
+
+        rule {
+            enabled = false
+            element = 'CLASS'
+            includes = ['org.gradle.*']
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 0.3
+            }
+        }
+    }
+}
+*/
