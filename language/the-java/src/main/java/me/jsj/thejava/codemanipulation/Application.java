@@ -1,4 +1,4 @@
-package me.jsj.thejava.codemanipulation.reflection;
+package me.jsj.thejava.codemanipulation;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

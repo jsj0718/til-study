@@ -1,4 +1,4 @@
-package me.jsj.thejava.codemanipulation.reflection.di;
+package me.jsj.thejava.codemanipulation.reflection.springdi;
 
 import org.springframework.stereotype.Repository;
 

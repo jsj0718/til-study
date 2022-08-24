@@ -30,6 +30,7 @@ public class JpaTest {
         joinDomains.add(joinDomain1);
         joinDomains.add(joinDomain2);
         joinDomains.add(joinDomain3);
+        joinDomains.add(joinDomain3);
 
         Domain domain = Domain.builder().name("jsj").flag(false).joinDomains(joinDomains).build();
         joinDomain1.setDomain(domain);
