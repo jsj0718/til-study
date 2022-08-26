@@ -7,15 +7,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class BookServiceTest {
+class StoreServiceTest {
 
     @Autowired
-    BookService bookService;
+    StoreService storeService;
 
     @Test
     void testDI() {
-        assertThat(bookService).isNotNull();
-        assertThat(bookService.getBookRepository()).isNotNull();
+        assertThat(storeService).isNotNull();
+        assertThat(storeService.getBookRepository()).isNotNull();
 
     }
 }

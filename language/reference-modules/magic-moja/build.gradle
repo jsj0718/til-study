@@ -1,0 +1,33 @@
+plugins {
+    id 'maven-publish'
+}
+
+dependencies {
+    implementation 'com.squareup:javapoet:1.13.0'
+    compileOnly 'com.google.auto.service:auto-service:1.0.1'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0.1'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+/*
+//maven과 mavenJava 차이점 알아보기
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'me.jsj'
+            artifactId = 'magic-moja'
+            version = '0.0.1-SNAPSHOT'
+
+            artifact 'build/libs/magic-moja-0.0.1-SNAPSHOT-plain.jar'
+        }
+    }
+}
+*/
+

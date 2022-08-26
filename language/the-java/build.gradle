@@ -3,11 +3,14 @@ plugins {
 }
 
 dependencies {
-    implementation 'net.bytebuddy:byte-buddy:1.12.13'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
     implementation 'com.h2database:h2'
+    implementation 'net.bytebuddy:byte-buddy:1.12.13'
+    implementation 'cglib:cglib:3.3.0'
+
+    compileOnly 'me.jsj:magic-moja:0.0.1-SNAPSHOT'
+    annotationProcessor 'me.jsj:magic-moja:0.0.1-SNAPSHOT'
 }
 
 test {

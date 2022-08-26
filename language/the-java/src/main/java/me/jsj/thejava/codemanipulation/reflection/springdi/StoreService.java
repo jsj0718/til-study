@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service;
 @Getter
 @RequiredArgsConstructor
 @Service
-public class BookService {
-    private final BookRepository bookRepository;
+public class StoreService {
+    private final StoreRepository bookRepository;
 }
