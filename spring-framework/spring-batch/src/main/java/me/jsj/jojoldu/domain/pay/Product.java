@@ -1,4 +1,4 @@
-package me.jsj.jojoldu.domain;
+package me.jsj.jojoldu.domain.pay;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

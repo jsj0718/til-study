@@ -1,8 +1,9 @@
-package me.jsj.jojoldu.job.reader;
+package me.jsj.jojoldu.job.writer;
 
 import me.jsj.jojoldu.TestBatchConfig;
-import me.jsj.jojoldu.domain.pay.Product;
-import me.jsj.jojoldu.domain.pay.ProductRepository;
+import me.jsj.jojoldu.domain.pay.Pay;
+import me.jsj.jojoldu.domain.pay.Pay2Repository;
+import me.jsj.jojoldu.domain.pay.PayRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.BatchStatus;
@@ -15,31 +16,38 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 @EntityScan("me.jsj.jojoldu.domain")
 @EnableJpaRepositories("me.jsj.jojoldu.domain")
 @SpringBatchTest
-@SpringBootTest(classes = {ProductPagingFailJobConfiguration.class, TestBatchConfig.class})
-@TestPropertySource(properties = {"job.name=" + ProductPagingFailJobConfiguration.JOB_NAME})
-class ProductPagingFailJobConfigurationTest {
+@SpringBootTest(classes = {JpaItemWriterJobConfiguration.class, TestBatchConfig.class})
+@TestPropertySource(properties = {"job.name=jpaItemWriterJob"})
+class JpaItemWriterJobConfigurationTest {
 
     @Autowired
     JobLauncherTestUtils jobLauncherTestUtils;
 
     @Autowired
-    ProductRepository productRepository;
+    PayRepository payRepository;
+
+    @Autowired
+    Pay2Repository pay2Repository;
 
     @AfterEach
     void clean() {
-        productRepository.deleteAll();
+        payRepository.deleteAll();
+        pay2Repository.deleteAll();
     }
 
     @Test
-    void 같은조건을읽고_업데이트를할때_getPage오버라이딩() throws Exception {
+    void testWriter() throws Exception {
         //given
         for (long i = 0; i < 50; i++) {
-            productRepository.save(new Product(i, false));
+            payRepository.save(new Pay(i, "txName" + i, LocalDateTime.now()));
         }
 
         //when
@@ -47,11 +55,7 @@ class ProductPagingFailJobConfigurationTest {
 
         //then
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-        /**
-         * 페이징 문제 발생
-         * 1. Cursor 사용
-         * 2. Paging 사용 시 getPage() 수정
-         */
-        assertThat(productRepository.findAllBySoldOut().size()).isEqualTo(50);
+        assertThat(payRepository.findAll().size()).isEqualTo(50);
+        assertThat(pay2Repository.findAll().size()).isEqualTo(50);
     }
 }

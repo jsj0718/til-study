@@ -20,9 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EntityScan("me.jsj.jojoldu.domain")
 @EnableJpaRepositories("me.jsj.jojoldu.domain")
 @SpringBatchTest
-@SpringBootTest(classes = {ProductPagingFailJobConfiguration.class, TestBatchConfig.class})
-@TestPropertySource(properties = {"job.name=" + ProductPagingFailJobConfiguration.JOB_NAME})
-class ProductPagingFailJobConfigurationTest {
+@SpringBootTest(classes = {ProductCursorFailJobConfiguration.class, TestBatchConfig.class})
+@TestPropertySource(properties = {"job.name=" + ProductCursorFailJobConfiguration.JOB_NAME})
+class ProductCursorFailJobConfigurationTest {
 
     @Autowired
     JobLauncherTestUtils jobLauncherTestUtils;
@@ -36,7 +36,7 @@ class ProductPagingFailJobConfigurationTest {
     }
 
     @Test
-    void 같은조건을읽고_업데이트를할때_getPage오버라이딩() throws Exception {
+    void 같은조건을읽고_업데이트를할때_Cursor사용() throws Exception {
         //given
         for (long i = 0; i < 50; i++) {
             productRepository.save(new Product(i, false));
@@ -47,11 +47,6 @@ class ProductPagingFailJobConfigurationTest {
 
         //then
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-        /**
-         * 페이징 문제 발생
-         * 1. Cursor 사용
-         * 2. Paging 사용 시 getPage() 수정
-         */
         assertThat(productRepository.findAllBySoldOut().size()).isEqualTo(50);
     }
 }

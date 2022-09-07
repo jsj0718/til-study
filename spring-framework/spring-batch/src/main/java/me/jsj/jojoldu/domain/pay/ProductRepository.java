@@ -1,4 +1,4 @@
-package me.jsj.jojoldu.domain;
+package me.jsj.jojoldu.domain.pay;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,8 +1,8 @@
-package me.jsj.jojoldu.job.reader;
+package me.jsj.jojoldu.job.processor;
 
 import me.jsj.jojoldu.TestBatchConfig;
-import me.jsj.jojoldu.domain.pay.Product;
-import me.jsj.jojoldu.domain.pay.ProductRepository;
+import me.jsj.jojoldu.domain.student.Teacher;
+import me.jsj.jojoldu.domain.student.TeacherRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.BatchStatus;
@@ -20,38 +20,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EntityScan("me.jsj.jojoldu.domain")
 @EnableJpaRepositories("me.jsj.jojoldu.domain")
 @SpringBatchTest
-@SpringBootTest(classes = {ProductPagingFailJobConfiguration.class, TestBatchConfig.class})
-@TestPropertySource(properties = {"job.name=" + ProductPagingFailJobConfiguration.JOB_NAME})
-class ProductPagingFailJobConfigurationTest {
+@SpringBootTest(classes = {ProcessorFilterJobConfiguration.class, TestBatchConfig.class})
+@TestPropertySource(properties = {"job.name=" + ProcessorFilterJobConfiguration.JOB_NAME})
+class ProcessorFilterJobConfigurationTest {
 
     @Autowired
     JobLauncherTestUtils jobLauncherTestUtils;
 
     @Autowired
-    ProductRepository productRepository;
+    TeacherRepository teacherRepository;
 
     @AfterEach
     void clean() {
-        productRepository.deleteAll();
+        teacherRepository.deleteAll();
     }
 
     @Test
-    void 같은조건을읽고_업데이트를할때_getPage오버라이딩() throws Exception {
+    void testProcessFilter_TeacherName() throws Exception {
         //given
-        for (long i = 0; i < 50; i++) {
-            productRepository.save(new Product(i, false));
+        for (int i = 0; i < 50; i++) {
+            Teacher teacher = Teacher.builder()
+                    .name("teacher" + i)
+                    .build();
+
+            teacherRepository.save(teacher);
         }
 
         //when
         JobExecution jobExecution = jobLauncherTestUtils.launchJob();
 
         //then
+        assertThat(teacherRepository.findAll().size()).isEqualTo(50);
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-        /**
-         * 페이징 문제 발생
-         * 1. Cursor 사용
-         * 2. Paging 사용 시 getPage() 수정
-         */
-        assertThat(productRepository.findAllBySoldOut().size()).isEqualTo(50);
     }
 }

@@ -1,4 +1,4 @@
-package me.jsj.jojoldu.domain;
+package me.jsj.jojoldu.domain.pay;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Pay {
-
-    @Id @GeneratedValue
+public class Pay2 {
+    @Id
+    @GeneratedValue
     private Long id;
 
     private Long amount;
@@ -26,13 +26,13 @@ public class Pay {
 
     private LocalDateTime txDateTime;
 
-    public Pay(Long amount, String txName, LocalDateTime txDateTime) {
+    public Pay2(Long amount, String txName, LocalDateTime txDateTime) {
         this.amount = amount;
         this.txName = txName;
         this.txDateTime = txDateTime;
     }
 
-    public Pay(Long id, Long amount, String txName, LocalDateTime txDateTime) {
+    public Pay2(Long id, Long amount, String txName, LocalDateTime txDateTime) {
         this.id = id;
         this.amount = amount;
         this.txName = txName;

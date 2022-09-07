@@ -2,7 +2,7 @@ package me.jsj.jojoldu.job.reader;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.jsj.jojoldu.domain.Pay;
+import me.jsj.jojoldu.domain.pay.Pay;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
