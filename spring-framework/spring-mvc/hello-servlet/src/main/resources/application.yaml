@@ -1,0 +1,5 @@
+# HTTP Logging
+logging:
+  level:
+    org.apache.coyote.http11: debug
+
