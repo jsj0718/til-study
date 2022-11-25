@@ -1,0 +1,7 @@
+#SecurityProperties 설정값
+#spring:
+#  security:
+#    user:
+#      name: admin
+#      password: 123
+#      roles: ADMIN
