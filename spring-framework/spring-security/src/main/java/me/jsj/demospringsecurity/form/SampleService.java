@@ -4,6 +4,7 @@ import me.jsj.demospringsecurity.account.Account;
 import me.jsj.demospringsecurity.account.AccountContext;
 import me.jsj.demospringsecurity.common.SecurityLogger;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +29,7 @@ public class SampleService {
         System.out.println(">>>>> Account Name: " + account.getUsername());
     }
 
+    @Secured("ROLE_USER")
     public String dashboardV3() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

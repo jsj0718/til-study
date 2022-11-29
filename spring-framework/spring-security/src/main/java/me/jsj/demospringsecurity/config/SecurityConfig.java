@@ -1,21 +1,31 @@
 package me.jsj.demospringsecurity.config;
 
+import lombok.RequiredArgsConstructor;
+import me.jsj.demospringsecurity.account.AccountService;
+import me.jsj.demospringsecurity.common.LoggingFilter;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 
+@RequiredArgsConstructor
 @Configuration
 //@EnableWebSecurity //Spring Boot에서 자동으로 추가
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final AccountService accountService;
 
 /*
     public AccessDecisionManager accessDecisionManager() {
@@ -57,6 +67,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class);
+
         http.authorizeRequests()
                 .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll()
                 .mvcMatchers("/admin").hasRole("ADMIN")
@@ -71,22 +83,43 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll(); //default: password
         http.httpBasic();
 
+        http.logout()
+                .logoutUrl("/logout") //default: /logout
+                .logoutSuccessUrl("/"); //default: /login
+
+
         //하위 쓰레드까지 SpringContextHolder 내용 유지 (Default는 ThreadLocal)
 //        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 
         //CSRF Filter 비활성화
 //        http.csrf().disable();
 
-        http.logout()
-                .logoutUrl("/logout") //default: /logout
-                .logoutSuccessUrl("/"); //default: /login
+        //세션 관리
+//        http.sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .sessionFixation()
+//                .changeSessionId()
+//                .maximumSessions(1)
+//                .maxSessionsPreventsLogin(true);
 
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .sessionFixation()
-                    .changeSessionId()
-                .maximumSessions(1)
-                    .maxSessionsPreventsLogin(true);
+        //인증 및 인가 예외 처리 필터
+        http.exceptionHandling()
+//                .accessDeniedPage("/access-denied") //권한 오류 페이지 지정
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                    String username = userDetails.getUsername();
+                    System.out.println(username + " is denied to access " + request.getRequestURI());
+                    response.sendRedirect("access-denied");
+                });
+
+        //RememberMeAuthenticationFilter
+        http.rememberMe()
+//                .rememberMeParameter("remember") //default: remember-me
+//                .tokenValiditySeconds() // 토큰 유효 기간 (default: 2주)
+//                .useSecureCookie() //https에서만 접근 가능한 쿠키
+
+                .userDetailsService(accountService)
+                .key("remember-me-sample");
     }
 
 /*
@@ -100,4 +133,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("admin").password("{noop}!@#").roles("ADMIN");
     }
 */
+
+    //AuthenticationManager를 Bean으로 노출
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }

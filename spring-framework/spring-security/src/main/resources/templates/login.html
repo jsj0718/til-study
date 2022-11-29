@@ -12,7 +12,9 @@
   <form action="/login" method="post" th:action="@{/login}">
       <p>username: <input type="text" name="my-username"/></p>
       <p>password: <input type="password" name="my-password"/></p>
+      <p>Remember: <input type="checkbox" name="remember-me"></p>
       <p><input type="submit" value="로그인"></p>
   </form>
+  <a href="/signup" th:href="@{/signup}">Signup</a>
 </body>
 </html>

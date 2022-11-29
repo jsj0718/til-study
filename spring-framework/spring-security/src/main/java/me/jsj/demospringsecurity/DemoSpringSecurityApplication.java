@@ -19,4 +19,6 @@ public class DemoSpringSecurityApplication {
 //        return NoOpPasswordEncoder.getInstance();
         return PasswordEncoderFactories.createDelegatingPasswordEncoder(); //default: bcrypt
     }
+
+
 }
