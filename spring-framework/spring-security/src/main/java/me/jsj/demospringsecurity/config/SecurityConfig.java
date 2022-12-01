@@ -79,8 +79,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginPage("/login") //추가 시 default로 제공되는 login과 logout 페이지는 사용할 수 없다.
                 .usernameParameter("my-username") //default: username
-                .passwordParameter("my-password")
-                .permitAll(); //default: password
+                .passwordParameter("my-password") //default: password
+                .permitAll();
         http.httpBasic();
 
         http.logout()
@@ -117,7 +117,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .rememberMeParameter("remember") //default: remember-me
 //                .tokenValiditySeconds() // 토큰 유효 기간 (default: 2주)
 //                .useSecureCookie() //https에서만 접근 가능한 쿠키
-
                 .userDetailsService(accountService)
                 .key("remember-me-sample");
     }
