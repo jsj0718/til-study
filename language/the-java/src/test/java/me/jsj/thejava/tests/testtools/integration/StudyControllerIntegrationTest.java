@@ -66,8 +66,8 @@ public class StudyControllerIntegrationTest {
      *  - JSON API Response 검증
      */
     @Test
-    @DisplayName("스터디 API 조회 : GET Param - 성공")
-    void get_study_param_success() throws Exception {
+    @DisplayName("스터디 API 조회 : GET Param V1 - 성공")
+    void get_study_param_successV1() throws Exception {
         String name = "$.[?(@.name == '%s')]";
         String limit = "$.[?(@.limit == '%s')]";
         String status = "$.[?(@.status == '%s')]";
@@ -80,6 +80,17 @@ public class StudyControllerIntegrationTest {
                 .andExpect(jsonPath(status, "DRAFT").exists());
     }
 
+    @Test
+    @DisplayName("스터디 API 조회 : GET Param V2 - 성공")
+    void get_study_param_successV2() throws Exception {
+        mvc.perform(get("/study")
+                        .param("name", "Java"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Java"))
+                .andExpect(jsonPath("$.limit").value(10))
+                .andExpect(jsonPath("$.status").value("DRAFT"));
+    }
+
     /**
      * - 요청
      *  - PathVariable 요청
@@ -88,8 +99,8 @@ public class StudyControllerIntegrationTest {
      *  - JSON API Response 검증
      */
     @Test
-    @DisplayName("스터디 API 조회 : GET PathVariable - 성공")
-    void get_study_success() throws Exception {
+    @DisplayName("스터디 API 조회 : GET PathVariable V1 - 성공")
+    void get_study_successV1() throws Exception {
         String name = "$.[?(@.name == '%s')]";
         String limit = "$.[?(@.limit == '%s')]";
         String status = "$.[?(@.status == '%s')]";
@@ -101,6 +112,16 @@ public class StudyControllerIntegrationTest {
                 .andExpect(jsonPath(status, "DRAFT").exists());
     }
 
+    @Test
+    @DisplayName("스터디 API 조회 : GET PathVariable V2 - 성공")
+    void get_study_successV2() throws Exception {
+        mvc.perform(get("/study/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Java"))
+                .andExpect(jsonPath("$.limit").value(10))
+                .andExpect(jsonPath("$.status").value("DRAFT"));
+    }
+
     /**
      * - 요청
      *  - HTTP FORM 형식으로 데이터 요청
@@ -109,8 +130,8 @@ public class StudyControllerIntegrationTest {
      *  - JSON API Response 검증
      */
     @Test
-    @DisplayName("스터디 폼 데이터 생성 - 성공")
-    void create_study_formdata_success() throws Exception {
+    @DisplayName("스터디 폼 데이터 생성 V1 - 성공")
+    void create_study_formdata_successV1() throws Exception {
         String name = "$.[?(@.name == '%s')]";
         String limit = "$.[?(@.limit == '%s')]";
         String status = "$.[?(@.status == '%s')]";
@@ -122,6 +143,18 @@ public class StudyControllerIntegrationTest {
                 .andExpect(jsonPath(name, "더 자바, 테스트").exists())
                 .andExpect(jsonPath(limit, 100).exists())
                 .andExpect(jsonPath(status, "DRAFT").exists());
+    }
+
+    @Test
+    @DisplayName("스터디 폼 데이터 생성 V2 - 성공")
+    void create_study_formdata_successV2() throws Exception {
+        mvc.perform(post("/study-form")
+                        .param("name", "더 자바, 테스트")
+                        .param("limit", "100"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("더 자바, 테스트"))
+                .andExpect(jsonPath("$.limit").value(100))
+                .andExpect(jsonPath("$.status").value("DRAFT"));
     }
 
     /**
@@ -149,7 +182,7 @@ public class StudyControllerIntegrationTest {
      *  - JSON API Response 검증
      */
     @Test
-    @DisplayName("스터디 API 생성 - 성공")
+    @DisplayName("스터디 API 생성 V1 - 성공")
     void create_study_success() throws Exception {
         String name = "$.[?(@.name == '%s')]";
         String limit = "$.[?(@.limit == '%s')]";
@@ -163,6 +196,19 @@ public class StudyControllerIntegrationTest {
                 .andExpect(jsonPath(name, "더 자바, 테스트").exists())
                 .andExpect(jsonPath(limit, 100).exists())
                 .andExpect(jsonPath(status, "DRAFT").exists());
+    }
+
+    @Test
+    @DisplayName("스터디 API 생성 V2 - 성공")
+    void create_study_successV2() throws Exception {
+        CreateStudyRequestDto dto = new CreateStudyRequestDto("더 자바, 테스트", 100);
+        mvc.perform(post("/study")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("더 자바, 테스트"))
+                .andExpect(jsonPath("$.limit").value(100))
+                .andExpect(jsonPath("$.status").value("DRAFT"));
     }
 
     @Data
