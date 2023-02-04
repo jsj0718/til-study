@@ -1,10 +1,8 @@
 rootProject.name = 'til-study'
-include 'software-engineering:ddd', 'software-engineering:design-pattern', 'software-engineering:tdd'
-include 'spring-framework:toby-spring', 'spring-framework:spring-mvc:hello-servlet', 'spring-framework:spring-jpa', 'spring-framework:spring-batch'
+include 'software-engineering:design-pattern', 'software-engineering:tdd', 'software-engineering:ddd'
+include 'spring-framework:toby-spring', 'spring-framework:spring-mvc:hello-servlet', 'spring-framework:spring-mvc:hello-springmvc', 'spring-framework:spring-jpa', 'spring-framework:spring-batch', 'spring-framework:spring-security'
+include 'spring-framework:spring-boot:spring-boot-getting-started'
 include 'language:effective-java', 'language:the-java'
 include 'language:reference-modules:korean-hello-service', 'language:reference-modules:MasulsaAgent', 'language:reference-modules:my-di-example', 'language:reference-modules:magic-moja'
 include 'frontend-study'
 include 'build-tool:gradle-module'
-include 'spring-framework:spring-mvc:hello-springmvc'
-findProject(':spring-framework:spring-mvc:hello-springmvc')?.name = 'hello-springmvc'
-

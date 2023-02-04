@@ -33,9 +33,9 @@ public class RepeatTest {
 
     @ParameterizedTest
     @CsvSource(value = {"a:2", "b:4"}, delimiter = ':')
-    void unitTest(String a, int i) {
-        System.out.println("a = " + a);
-        System.out.println("i = " + i);
+    void unitTest(String str, int num) {
+        System.out.println("str = " + str);
+        System.out.println("num = " + num);
     }
 
     @DisplayName("파라미터 테스트")
