@@ -1,0 +1,5 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.bouncycastle:bcprov-jdk16:1.46'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+}
