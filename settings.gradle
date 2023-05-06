@@ -1,7 +1,7 @@
 rootProject.name = 'til-study'
 include 'software-engineering:design-pattern', 'software-engineering:tdd', 'software-engineering:ddd'
 include 'spring-framework:toby-spring', 'spring-framework:spring-mvc:hello-servlet', 'spring-framework:spring-mvc:hello-springmvc', 'spring-framework:spring-jpa', 'spring-framework:spring-batch', 'spring-framework:spring-security', 'spring-framework:spring-db', 'spring-framework:spring-mvc:rest-template', 'spring-framework:spring-mvc:file-api'
-include 'spring-framework:spring-boot:spring-boot-getting-started'
+include 'spring-framework:spring-boot:spring-boot-getting-started', 'spring-framework:query-dsl'
 include 'language:effective-java', 'language:the-java'
 include 'language:reference-modules:korean-hello-service', 'language:reference-modules:MasulsaAgent', 'language:reference-modules:my-di-example', 'language:reference-modules:magic-moja'
 include 'frontend-study'
